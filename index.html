@@ -73,13 +73,12 @@
           class="responsive-container flex sm:flex-row sm:justify-between sm:space-x-8 sm:space-y-0 flex-col space-y-8"
         >
           <div class="sm:w-1/5 space-y-6">
-
             <div class="space-y-4">
-              <p class="text-base font-semibold tracking-wide">Filter by: </p>
+              <p class="text-base font-semibold tracking-wide">Filter by:</p>
 
               <div class="space-y-2">
                 <div
-                  v-for="(filter, index) in filters"
+                  v-for="(sortOption, index) in sortOptions"
                   :key="index"
                   class="flex items-center"
                 >
@@ -87,25 +86,28 @@
                     <input
                       type="radio"
                       name="filter"
-                      v-model="filterBy"
-                      :value="filter"
-                      :id="filter"
-                      class="w-4 h-4 mr-3 checkbox appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full focus:outline-none border  border-gray-400 checked:border-4 checked:border-primary cursor-pointer"
+                      v-model="sortBy"
+                      :value="sortOption"
+                      :id="sortOption"
+                      class="w-4 h-4 mr-3 checkbox appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full focus:outline-none border border-gray-400 checked:border-4 checked:border-primary cursor-pointer"
                     />
                   </div>
-                  <label :for="filter" class="capitalize cursor-pointer" :class="{'text-primary': filterBy === filter}"
-                    >{{ filter }}</label
+                  <label
+                    :for="sortOption"
+                    class="capitalize cursor-pointer"
+                    :class="{'text-primary': sortBy === sortOption}"
+                    >{{ sortOption }}</label
                   >
                 </div>
               </div>
             </div>
 
             <div class="space-y-4">
-              <p class="text-base font-semibold tracking-wide">Order by: </p>
+              <p class="text-base font-semibold tracking-wide">Order by:</p>
 
               <div class="space-y-2">
                 <div
-                v-for="(order, index) in orders"
+                  v-for="(order, index) in orders"
                   :key="index"
                   class="flex items-center"
                 >
@@ -116,22 +118,24 @@
                       v-model="orderBy"
                       :value="order.value"
                       :id="order.value"
-                      class="w-4 h-4 mr-3 checkbox appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full focus:outline-none border  border-gray-400 checked:border-4 checked:border-primary cursor-pointer"
+                      class="w-4 h-4 mr-3 checkbox appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full focus:outline-none border border-gray-400 checked:border-4 checked:border-primary cursor-pointer"
                     />
                   </div>
-                  <label :for="order.value" class="capitalize cursor-pointer" :class="{'text-primary': orderBy === order.value}"
+                  <label
+                    :for="order.value"
+                    class="capitalize cursor-pointer"
+                    :class="{'text-primary': orderBy === order.value}"
                     >{{ order.text }}</label
                   >
                 </div>
               </div>
             </div>
-
           </div>
 
           <div class="sm:w-4/5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
               class="p-4 space-y-2 flex flex-col justify-between border-2 border-black rounded-xl"
-              v-for="(lesson, index) in lessons"
+              v-for="(lesson, index) in filteredLessons"
               :key="index"
             >
               <div class="flex justify-between space-x-6">
@@ -163,6 +167,7 @@
         </div>
       </main>
     </div>
+
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script type="module">
       import lessons from "./lessons.js";
@@ -171,17 +176,17 @@
         el: "#app",
         data: {
           cart: [],
-          filterBy: "",
-          orderBy: null,
-          filters: ["subject", "location", "price", "availability"],
+          sortBy: "subject",
+          orderBy: "asc",
+          sortOptions: ["subject", "location", "price", "availability"],
           orders: [
             {
-              text: 'Ascending',
-              value: 1,
+              text: "Ascending",
+              value: "asc",
             },
             {
-              text: 'Descending',
-              value: -1,
+              text: "Descending",
+              value: "desc",
             },
           ],
           lessons,
@@ -223,6 +228,73 @@
             if (this.cart.length > 0)
               return this.cart.reduce((total, item) => total + item.spaces, 0);
             return 0;
+          },
+          filteredLessons() {
+            if (this.orderBy === "asc") {
+              // ascending
+              switch (this.sortBy) {
+                case "subject":
+                  return this.lessons.sort((a, b) => {
+                    if (a.subject.toLowerCase() > b.subject.toLowerCase())
+                      return 1;
+                    if (a.subject.toLowerCase() < b.subject.toLowerCase())
+                      return -1;
+                    return 0;
+                  });
+                case "location":
+                  return this.lessons.sort((a, b) => {
+                    if (a.location.toLowerCase() > b.location.toLowerCase())
+                      return 1;
+                    if (a.location.toLowerCase() < b.location.toLowerCase())
+                      return -1;
+                    return 0;
+                  });
+                case "price":
+                  return this.lessons.sort((a, b) => {
+                    if (a.price > b.price) return 1;
+                    if (a.price < b.price) return -1;
+                    return 0;
+                  });
+                case "availability":
+                  return this.lessons.sort((a, b) => {
+                    if (a.spaces > b.spaces) return 1;
+                    if (a.spaces < b.spaces) return -1;
+                    return 0;
+                  });
+              }
+            } else if (this.orderBy === "desc") {
+              // descending
+              switch (this.sortBy) {
+                case "subject":
+                  return this.lessons.sort((a, b) => {
+                    if (a.subject.toLowerCase() > b.subject.toLowerCase())
+                      return -1;
+                    if (a.subject.toLowerCase() < b.subject.toLowerCase())
+                      return 1;
+                    return 0;
+                  });
+                case "location":
+                  return this.lessons.sort((a, b) => {
+                    if (a.location.toLowerCase() > b.location.toLowerCase())
+                      return -1;
+                    if (a.location.toLowerCase() < b.location.toLowerCase())
+                      return 1;
+                    return 0;
+                  });
+                case "price":
+                  return this.lessons.sort((a, b) => {
+                    if (a.price > b.price) return -1;
+                    if (a.price < b.price) return 1;
+                    return 0;
+                  });
+                case "availability":
+                  return this.lessons.sort((a, b) => {
+                    if (a.spaces > b.spaces) return -1;
+                    if (a.spaces < b.spaces) return 1;
+                    return 0;
+                  });
+              }
+            }
           },
         },
       });
