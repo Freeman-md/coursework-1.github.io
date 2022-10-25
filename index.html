@@ -69,17 +69,33 @@
       </header>
 
       <main>
-        <div class="responsive-container grid grid-cols-4">
-          <div class="p-4 space-y-2 border-2 border-black rounded-xl" v-for="(lesson, index) in lessons" :key="index">
-            <p><strong>Subject:</strong> {{ lesson.subject }}</p>
-            <p><strong>Location:</strong> {{ lesson.location }}</p>
-            <p><strong>Price:</strong> £{{ lesson.price }}</p>
-            <p><strong>Spaces:</strong> {{ lesson.spaces }}</p>
+        <div
+          class="responsive-container grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
+        >
+          <div
+            class="p-4 space-y-2 flex flex-col justify-between border-2 border-black rounded-xl"
+            v-for="(lesson, index) in lessons"
+            :key="index"
+          >
+            <div class="flex justify-between space-x-6">
+              <div class="space-y-1">
+                <p><strong>Subject:</strong> {{ lesson.subject }}</p>
+                <p><strong>Location:</strong> {{ lesson.location }}</p>
+                <p><strong>Price:</strong> £{{ lesson.price }}</p>
+                <p><strong>Spaces:</strong> {{ lesson.spaces }}</p>
+              </div>
+
+              <img
+                :src="lesson.image"
+                :alt="lesson.subject"
+                class="w-10 h-10"
+              />
+            </div>
 
             <div class="flex justify-end">
               <button
                 class="!mt-2 text-sm bg-primary p-1.5 rounded text-white transition duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                
+                :disabled="lesson.spaces <= 0"
                 v-on:click.prevent="addToCart(lesson.id)"
               >
                 Add to cart
@@ -90,28 +106,18 @@
       </main>
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
-    <script type="text/javascript">
+    <script type="module">
+      import lessons from './lessons.js'
+
       new Vue({
         el: "#app",
         data: {
-          lessons: [{
-            id: 1,
-            subject: "Mathematics",
-            location: "London",
-            price: 100,
-            spaces: 5,
-          }],
           cart: [],
+          lessons,
         },
         methods: {
           isItemInCart(id) {
-            return this.cart.some((item) => {
-              if (item.id === id) {
-                return true;
-              }
-
-              return false;
-            });
+            return !!this.cart.find(item => item.id === id);
           },
           addToCart(id) {
             const lesson = this.lessons.find((lesson) => lesson.id === id);
@@ -123,24 +129,19 @@
               });
             } else {
               if (lesson.spaces > 0) {
-                const cartItem = this.cart.find(
-                  (lesson) => lesson.id === id
-                );
-
                 this.cart = this.cart.map((item) => {
-                  if (item.id === cartItem.id) {
-                    return { ...item, spaces: ++cartItem.spaces };
-                  }
+                  if (item.id === id) return { ...item, spaces: ++item.spaces };
+                  return item
                 });
               }
             }
 
             this.decreaseLessonSpaces(lesson.id);
-
           },
           decreaseLessonSpaces(id) {
             this.lessons = this.lessons.map((item) => {
-              if (item.id === id && item.spaces > 0) return { ...item, spaces: --item.spaces };
+              if (item.id === id && item.spaces > 0)
+                return { ...item, spaces: --item.spaces };
 
               return item;
             });
