@@ -68,38 +68,96 @@
         </nav>
       </header>
 
-      <main>
+      <main class="mt-4">
         <div
-          class="responsive-container grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"
+          class="responsive-container flex sm:flex-row sm:justify-between sm:space-x-8 sm:space-y-0 flex-col space-y-8"
         >
-          <div
-            class="p-4 space-y-2 flex flex-col justify-between border-2 border-black rounded-xl"
-            v-for="(lesson, index) in lessons"
-            :key="index"
-          >
-            <div class="flex justify-between space-x-6">
-              <div class="space-y-1">
-                <p><strong>Subject:</strong> {{ lesson.subject }}</p>
-                <p><strong>Location:</strong> {{ lesson.location }}</p>
-                <p><strong>Price:</strong> £{{ lesson.price }}</p>
-                <p><strong>Spaces:</strong> {{ lesson.spaces }}</p>
-              </div>
+          <div class="sm:w-1/5 space-y-6">
 
-              <img
-                :src="lesson.image"
-                :alt="lesson.subject"
-                class="w-10 h-10"
-              />
+            <div class="space-y-4">
+              <p class="text-base font-semibold tracking-wide">Filter by: </p>
+
+              <div class="space-y-2">
+                <div
+                  v-for="(filter, index) in filters"
+                  :key="index"
+                  class="flex items-center"
+                >
+                  <div>
+                    <input
+                      type="radio"
+                      name="filter"
+                      v-model="filterBy"
+                      :value="filter"
+                      :id="filter"
+                      class="w-4 h-4 mr-3 checkbox appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full focus:outline-none border  border-gray-400 checked:border-4 checked:border-primary cursor-pointer"
+                    />
+                  </div>
+                  <label :for="filter" class="capitalize cursor-pointer" :class="{'text-primary': filterBy === filter}"
+                    >{{ filter }}</label
+                  >
+                </div>
+              </div>
             </div>
 
-            <div class="flex justify-end">
-              <button
-                class="!mt-2 text-sm bg-primary p-1.5 rounded text-white transition duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
-                :disabled="lesson.spaces <= 0"
-                v-on:click.prevent="addToCart(lesson.id)"
-              >
-                Add to cart
-              </button>
+            <div class="space-y-4">
+              <p class="text-base font-semibold tracking-wide">Order by: </p>
+
+              <div class="space-y-2">
+                <div
+                v-for="(order, index) in orders"
+                  :key="index"
+                  class="flex items-center"
+                >
+                  <div>
+                    <input
+                      type="radio"
+                      name="order"
+                      v-model="orderBy"
+                      :value="order.value"
+                      :id="order.value"
+                      class="w-4 h-4 mr-3 checkbox appearance-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full focus:outline-none border  border-gray-400 checked:border-4 checked:border-primary cursor-pointer"
+                    />
+                  </div>
+                  <label :for="order.value" class="capitalize cursor-pointer" :class="{'text-primary': orderBy === order.value}"
+                    >{{ order.text }}</label
+                  >
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="sm:w-4/5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              class="p-4 space-y-2 flex flex-col justify-between border-2 border-black rounded-xl"
+              v-for="(lesson, index) in lessons"
+              :key="index"
+            >
+              <div class="flex justify-between space-x-6">
+                <div class="space-y-1">
+                  <p><strong>Subject:</strong> {{ lesson.subject }}</p>
+                  <p><strong>Location:</strong> {{ lesson.location }}</p>
+                  <p><strong>Price:</strong> £{{ lesson.price }}</p>
+                  <p><strong>Spaces:</strong> {{ lesson.spaces }}</p>
+                </div>
+
+                <img
+                  :src="lesson.image"
+                  :alt="lesson.subject"
+                  class="w-10 h-10"
+                />
+              </div>
+
+              <div class="flex justify-end">
+                <button
+                  class="!mt-2 text-sm bg-primary p-1.5 rounded text-white transition duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+                  :disabled="lesson.spaces <= 0"
+                  v-on:click.prevent="addToCart(lesson.id)"
+                >
+                  Add to cart
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -107,17 +165,30 @@
     </div>
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script type="module">
-      import lessons from './lessons.js'
+      import lessons from "./lessons.js";
 
       new Vue({
         el: "#app",
         data: {
           cart: [],
+          filterBy: "",
+          orderBy: null,
+          filters: ["subject", "location", "price", "availability"],
+          orders: [
+            {
+              text: 'Ascending',
+              value: 1,
+            },
+            {
+              text: 'Descending',
+              value: -1,
+            },
+          ],
           lessons,
         },
         methods: {
           isItemInCart(id) {
-            return !!this.cart.find(item => item.id === id);
+            return !!this.cart.find((item) => item.id === id);
           },
           addToCart(id) {
             const lesson = this.lessons.find((lesson) => lesson.id === id);
@@ -131,7 +202,7 @@
               if (lesson.spaces > 0) {
                 this.cart = this.cart.map((item) => {
                   if (item.id === id) return { ...item, spaces: ++item.spaces };
-                  return item
+                  return item;
                 });
               }
             }
