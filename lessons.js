@@ -5,7 +5,7 @@ export default [
       location: "Hendon",
       price: 100,
       spaces: 5,
-      image: "/images/1.svg",
+      image: "./images/1.svg",
     },
     {
       id: 2,
@@ -13,7 +13,7 @@ export default [
       location: "Kent",
       price: 250,
       spaces: 5,
-      image: "/images/2.svg",
+      image: "./images/2.svg",
     },
     {
       id: 3,
@@ -21,7 +21,7 @@ export default [
       location: "Finchley",
       price: 300,
       spaces: 5,
-      image: "/images/3.svg",
+      image: "./images/3.svg",
     },
     {
       id: 4,
@@ -29,7 +29,7 @@ export default [
       location: "Golders Green",
       price: 1000,
       spaces: 5,
-      image: "/images/4.svg",
+      image: "./images/4.svg",
     },
     {
       id: 5,
@@ -37,7 +37,7 @@ export default [
       location: "Cricklewood",
       price: 250,
       spaces: 5,
-      image: "/images/5.svg",
+      image: "./images/5.svg",
     },
     {
       id: 6,
@@ -45,7 +45,7 @@ export default [
       location: "Colindale",
       price: 150,
       spaces: 5,
-      image: "/images/6.svg",
+      image: "./images/6.svg",
     },
     {
       id: 7,
@@ -53,7 +53,7 @@ export default [
       location: "Neasden",
       price: 200,
       spaces: 5,
-      image: "/images/7.svg",
+      image: "./images/7.svg",
     },
     {
       id: 8,
@@ -61,7 +61,7 @@ export default [
       location: "Edgware",
       price: 200,
       spaces: 5,
-      image: "/images/8.svg",
+      image: "./images/8.svg",
     },
     {
       id: 9,
@@ -69,7 +69,7 @@ export default [
       location: "Kingsbury",
       price: 850,
       spaces: 5,
-      image: "/images/9.svg",
+      image: "./images/9.svg",
     },
     {
       id: 10,
@@ -77,7 +77,7 @@ export default [
       location: "Luton",
       price: 800,
       spaces: 5,
-      image: "/images/10.svg",
+      image: "./images/10.svg",
     },
   ]
   
