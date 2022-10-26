@@ -2,7 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Group Coursework 1</title>
+
+    <title>Individual Coursework 1</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="FOLLOW, INDEX" />
+    <link
+      rel="canonical"
+      href="@yield('og:url', 'https://freeman-md.github.io/coursework-1.github.io/')"
+    />
+    <meta
+      name=" keywords"
+      content="UG Project, Individual Coursework 1, Individual Project, Middlesex University Project, Middlesex University UG Invidual Project, Web-based Mobile App Development Individual Project, Freeman Madudili UG Invidual Project, Freeman-md Individual Project, Middlesex University Freeman Madudili Individual Project, Middlesex University Freeman Madudili UG Project, Middlesex University Freeman Madudili Individual Coursework 1"
+    />
+    <meta
+      name="description"
+      content="@yield('og:description', 'Use the Pay4Me app to complete various educational and travel-related transactions like admission, tuition, and SEVIS fees from anywhere in Nigeria. We offer competitive exchange rates and 24/7 customer support.')"
+    />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="shortcut icon" href="/favicon.ico?v=19p8hy8ltvg" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="@yield('og:type', 'website')" />
+    <meta
+      property="og:title"
+      content="@yield('og:title', 'Individual Coursework 1 | Web-based Mobile App Development UG Individual Project')"
+    />
+    <meta
+      property="og:site_name"
+      content="@yield('og:title', 'Individual Coursework 1 | Web-based Mobile App Development UG Individual Project')"
+    />
+    <meta
+      property="og:url"
+      content="@yield('og:url', 'https://freeman-md.github.io/coursework-1.github.io/')"
+    />
+    <meta
+      property="og:description"
+      content="@yield('og:description', 'Web-based Mobile App Development UG Individual Project that allows users shop from a range of available lessons.')"
+    />
+    <meta
+      property="og:image"
+      content="@yield('og:image', 'https://freeman-md.github.io/coursework-1.github.io/images/me.png?v=gt102')"
+    />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
       @layer components {
@@ -32,7 +80,7 @@
           <div
             class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
           >
-            <a href="/" class="flex items-center">
+            <a href="javascript:void(0)" class="flex items-center">
               <img
                 src="https://ik.imagekit.io/fmxqscuev/icons8-lessons-64_pdvEMVgCW.png?ik-sdk-version=javascript-1.4.3&updatedAt=1666292631783"
                 class="mr-3 h-6 sm:h-9"
@@ -80,7 +128,6 @@
           class="responsive-container flex sm:flex-row sm:justify-between sm:space-x-8 sm:space-y-0 flex-col space-y-8"
         >
           <div class="sm:w-1/5 space-y-6">
-
             <div class="w-full">
               <input
                 type="text"
@@ -367,7 +414,7 @@
         el: "#app",
 
         data: {
-          searchText: '',
+          searchText: "",
           sortBy: "subject",
           orderBy: "asc",
           sortOptions: ["subject", "location", "price", "availability"],
@@ -472,9 +519,8 @@
             this.cart = [];
 
             Object.keys(this.checkoutForm).every(
-              (key) =>
-                this.checkoutForm[key].value = ""
-            )
+              (key) => (this.checkoutForm[key].value = "")
+            );
 
             setTimeout(() => {
               this.checkedOut = false;
@@ -489,7 +535,15 @@
             return 0;
           },
           filteredLessons() {
-            const lessons = this.lessons.filter(lesson => lesson.subject.toLowerCase().includes(this.searchText.toLowerCase()) || lesson.location.toLowerCase().includes(this.searchText.toLowerCase()))
+            const lessons = this.lessons.filter(
+              (lesson) =>
+                lesson.subject
+                  .toLowerCase()
+                  .includes(this.searchText.toLowerCase()) ||
+                lesson.location
+                  .toLowerCase()
+                  .includes(this.searchText.toLowerCase())
+            );
 
             if (this.orderBy === "asc") {
               // ascending

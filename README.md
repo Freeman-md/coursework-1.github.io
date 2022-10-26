@@ -1,6 +1,6 @@
 # Coursework-1
 
-This is an individual project that allows users shop from a range of available lessons.
+Web-based Mobile App Development UG Individual Project that allows users shop from a range of available lessons.
 
 Project Features:
 - Users can sort lessons by Subject, Location, Price and Availability.
