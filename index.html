@@ -32,7 +32,7 @@
           <div
             class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
           >
-            <a href="https://flowbite.com" class="flex items-center">
+            <a href="/" class="flex items-center">
               <img
                 src="https://ik.imagekit.io/fmxqscuev/icons8-lessons-64_pdvEMVgCW.png?ik-sdk-version=javascript-1.4.3&updatedAt=1666292631783"
                 class="mr-3 h-6 sm:h-9"
@@ -44,13 +44,18 @@
               >
             </a>
 
-            <a href="javascript:void(0)" class="relative">
+            <button
+              class="relative transition duration-200"
+              :class="[cartLength <= 0 ? 'text-gray-500' : 'text-white']"
+              :disabled="cartLength <= 0"
+              @click.prevent="toggleCartDisplay"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
-                stroke="#ffffff"
+                stroke="currentColor"
                 class="w-6 h-6"
               >
                 <path
@@ -63,13 +68,15 @@
                 class="absolute -top-2 -right-2 w-4 h-4 flex justify-center items-center bg-primary text-white text-xs rounded-full"
                 >{{ cartLength }}</span
               >
-            </a>
+            </button>
           </div>
         </nav>
       </header>
 
       <main class="mt-4">
         <div
+          v-if="!isCartDisplaying"
+          id="lessons"
           class="responsive-container flex sm:flex-row sm:justify-between sm:space-x-8 sm:space-y-0 flex-col space-y-8"
         >
           <div class="sm:w-1/5 space-y-6">
@@ -165,6 +172,54 @@
             </div>
           </div>
         </div>
+
+        <div
+          v-else
+          id="cart"
+          class="responsive-container"
+        >
+          <h2 class="font-semibold text-xl uppercase tracking-wide block">Shopping Cart</h2>
+
+          <div class="flex sm:flex-row sm:justify-between sm:space-x-8 sm:space-y-0 flex-col space-y-8 mt-4">
+
+          <div class="sm:w-3/4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              class="p-4 space-y-2 flex flex-col justify-between border-2 border-black rounded-xl"
+              v-for="(item, index) in cart"
+              :key="index"
+            >
+              <div class="flex justify-between space-x-6">
+                <div class="space-y-1">
+                  <p><strong>Subject:</strong> {{ item.subject }}</p>
+                  <p><strong>Location:</strong> {{ item.location }}</p>
+                  <p><strong>Price:</strong> £{{ item.price }}</p>
+                  <p><strong>Spaces:</strong> {{ item.spaces }}</p>
+                </div>
+
+                <img
+                  :src="item.image"
+                  :alt="item.subject"
+                  class="w-10 h-10"
+                />
+              </div>
+
+              <div class="flex justify-end">
+                <button
+                  class="!mt-2 text-sm bg-primary p-1.5 rounded text-white transition duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+                  v-on:click.prevent="removeFromCart(item.id)"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sm:w-1/4">
+
+          </div>
+
+          </div>
+        </div>
       </main>
     </div>
 
@@ -175,7 +230,6 @@
       new Vue({
         el: "#app",
         data: {
-          cart: [],
           sortBy: "subject",
           orderBy: "asc",
           sortOptions: ["subject", "location", "price", "availability"],
@@ -189,9 +243,36 @@
               value: "desc",
             },
           ],
+          cart: [],
+          isCartDisplaying: false,
           lessons,
         },
         methods: {
+          updateLessonSpaces(type, id) {
+            console.log('in here')
+            switch (type) {
+              case 'decrease':
+                this.lessons = this.lessons.map((item) => {
+                  if (item.id === id && item.spaces > 0)
+                    return { ...item, spaces: --item.spaces };
+
+                  return item;
+                });
+                break;
+
+              case 'reset':
+                this.lessons = this.lessons.map((item) => {
+                  if (item.id === id)
+                    return { ...item, spaces: 5 };
+
+                  return item;
+                });
+                break;
+          
+              default:
+                break;
+            }
+          },
           isItemInCart(id) {
             return !!this.cart.find((item) => item.id === id);
           },
@@ -212,15 +293,23 @@
               }
             }
 
-            this.decreaseLessonSpaces(lesson.id);
+            this.updateLessonSpaces('decrease', lesson.id);
           },
-          decreaseLessonSpaces(id) {
-            this.lessons = this.lessons.map((item) => {
-              if (item.id === id && item.spaces > 0)
-                return { ...item, spaces: --item.spaces };
+          removeFromCart(id) {
+            // get index of cart item
+            const index = this.cart.findIndex(item => item.id === id)
 
-              return item;
-            });
+            // remove item from cart
+            this.cart.splice(index, 1)
+
+            // update lesson spaces
+            this.updateLessonSpaces('reset', id)
+
+            // toggle cart display if no item is in cart
+            if (!this.cart.length) this.toggleCartDisplay()
+          },
+          toggleCartDisplay() {
+            this.isCartDisplaying = !this.isCartDisplaying;
           },
         },
         computed: {
