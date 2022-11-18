@@ -446,7 +446,6 @@
 
         methods: {
           updateLessonSpaces(type, id) {
-            console.log("in here");
             switch (type) {
               case "decrease":
                 this.lessons = this.lessons.map((item) => {
@@ -622,7 +621,10 @@
         watch: {
           "checkoutForm.name": {
             handler(val) {
+              const validationRegex = /^[A-Za-z\s]*$/;
+
               if (!val.value) val.error = "Please enter your name";
+              else if (!validationRegex.test(val.value)) val.error = "Your name must only contain letters"
               else val.error = "";
             },
             deep: true,
